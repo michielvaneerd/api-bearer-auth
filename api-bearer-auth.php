@@ -3,13 +3,13 @@
 Plugin Name: API Bearer Auth
 Description: Authentication for REST API
 Text Domain: api_bearer_auth
-Version: 20190908
+Version: 20200717
 Author: Michiel van Eerd
 License: GPL2
 */
 
 // Always update this!
-define('API_BEARER_AUTH_PLUGIN_VERSION', '20190908');
+define('API_BEARER_AUTH_PLUGIN_VERSION', '20200717');
 
 /**
  * How long access token will be valid.
@@ -171,6 +171,12 @@ if (!class_exists('API_Bearer_Auth')) {
      * Check if we are allowed to do this API request.
      */
     public function rest_authentication_errors_filter($error) {
+
+      // Preflight requests (OPTIONS) should not require autentication:
+      // https://stackoverflow.com/a/61852875/1294832
+      if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+        return $error;
+      }
   
       // If $error is not empty, another auth method has set this
       // so we don't need to do anything.
@@ -198,25 +204,24 @@ if (!class_exists('API_Bearer_Auth')) {
           $my_urls = self::$UNAUTHENTICATED_ENDPOINTS[$_SERVER['REQUEST_METHOD']];
         }
         $urls = array_merge($custom_urls, $my_urls);
-        $found = false;
         foreach ($urls as $url) {
           if (preg_match('@^' . $siteUrl . $url . '$@', $currentUrl)) {
-            $found = true;
-            break;
+            // We did not authenticate this user (because we have no user).
+            // But this request is allowed publicly for us.
+            // So return default (null), maybe other filter callbacks will do something with this.
+            return $error;
           }
         }
-        if (!$found) {
-          return new WP_Error('api_bearer_auth_not_logged_in',
-            __('You are not logged in.', 'api_bearer_auth'), ['status' => 401]);
-        } else {
-          // We did not authenticate this user (because we have no user).
-          // But this request is allowed publicly for us.
-          // So return default (null), maybe other filter callbacks will do something with this.
-          return $error;
-        }
+
+        // No whitelisted URL found.
+        return new WP_Error('api_bearer_auth_not_logged_in',
+          __('You are not logged in.', 'api_bearer_auth'), ['status' => 401]);
+
       } elseif (!is_user_member_of_blog()) {
+
         return new WP_Error('api_api_bearer_auth_wrong_blog',
           __('You are no member of this blog.', 'api_bearer_auth'), ['status' => 401]);
+
       }
       
       // We have and authenticated user that is member of this blog and we have no problem with this request.

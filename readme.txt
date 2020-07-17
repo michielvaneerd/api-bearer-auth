@@ -149,6 +149,9 @@ function api_bearer_auth_unauthenticated_urls_filter($custom_urls, $request_meth
 
 == Changelog ==
 
+= 20200717 =
+* Preflight requests (OPTIONS) should not require autentication:
+
 = 20190908 =
 * Removed Swagger
 

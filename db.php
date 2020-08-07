@@ -70,7 +70,7 @@ class API_Bearer_Auth_Db {
     $token = $this->create_access_token($user_id);
     if ($wpdb->query($wpdb->prepare("UPDATE " . $wpdb->base_prefix . "user_tokens
       SET access_token = %s,
-      access_token_valid = %s", $token['token'], $token['expires_datetime'])))
+      access_token_valid = %s WHERE user_id = %d", $token['token'], $token['expires_datetime'], $user_id)))
     {
       return [
         'access_token' => $token['token'],

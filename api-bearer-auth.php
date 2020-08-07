@@ -3,13 +3,13 @@
 Plugin Name: API Bearer Auth
 Description: Authentication for REST API
 Text Domain: api_bearer_auth
-Version: 20200717
+Version: 20200807
 Author: Michiel van Eerd
 License: GPL2
 */
 
 // Always update this!
-define('API_BEARER_AUTH_PLUGIN_VERSION', '20200717');
+define('API_BEARER_AUTH_PLUGIN_VERSION', '20200807');
 
 /**
  * How long access token will be valid.

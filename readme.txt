@@ -10,6 +10,18 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
 Access and refresh tokens based authentication plugin for the REST API.
 
+== Important update ==
+
+__Update immediately if you're using a version below 20200807. Before this version all access tokens were updated when calling the refresh callback.__
+
+If you are affected by this the fastest solution is to execute this query:
+
+`update wp_user_tokens set access_token_valid = NOW();`
+
+This will invalidate all access tokens. This means that all users need to refresh their access token and will get a new access token and a unique one this time.
+
+A big thank to @harchvertelol for reporting this and suggesting the fix as well!
+
 == Description ==
 
 The API Bearer Auth plugin enables authentication for the REST API by using JWT access an refresh tokens. After the user logs in, the access and refresh tokens are returned and can be used for the next requests. Issued tokens can be revoked from within the users admin screen. See below for the endpoints.
@@ -148,6 +160,9 @@ function api_bearer_auth_unauthenticated_urls_filter($custom_urls, $request_meth
 }`
 
 == Changelog ==
+
+= 20200807 =
+* Big bug fixed (thanks to @harchvertelol!), please update immediately! Calling the refresh request will update ALL access tokens! This is now fixed.
 
 = 20200717 =
 * Preflight requests (OPTIONS) should not require autentication:

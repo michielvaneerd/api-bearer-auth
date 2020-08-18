@@ -161,6 +161,9 @@ function api_bearer_auth_unauthenticated_urls_filter($custom_urls, $request_meth
 
 == Changelog ==
 
+= 20200818 =
+* Removed `user_pass` from returned user after login call.
+
 = 20200807 =
 * Big bug fixed (thanks to @harchvertelol!), please update immediately! Calling the refresh request will update ALL access tokens! This is now fixed.
 

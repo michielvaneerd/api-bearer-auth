@@ -3,13 +3,13 @@
 Plugin Name: API Bearer Auth
 Description: Authentication for REST API
 Text Domain: api_bearer_auth
-Version: 20200807
+Version: 20200818
 Author: Michiel van Eerd
 License: GPL2
 */
 
 // Always update this!
-define('API_BEARER_AUTH_PLUGIN_VERSION', '20200807');
+define('API_BEARER_AUTH_PLUGIN_VERSION', '20200818');
 
 /**
  * How long access token will be valid.
@@ -298,8 +298,12 @@ if (!class_exists('API_Bearer_Auth')) {
       }
       // Update access en refresh tokens
       if (($result = $this->db->login($user->ID)) !== false) {
+
+        $safeUser = $user;
+        unset($safeUser->data->user_pass);
+
         return rest_ensure_response([
-          'wp_user' => $user,
+          'wp_user' => $safeUser,
           'access_token' => $result['access_token'],
           'expires_in' => $result['expires_in'],
           'refresh_token' => $result['refresh_token'],

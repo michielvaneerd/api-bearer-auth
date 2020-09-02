@@ -161,6 +161,9 @@ function api_bearer_auth_unauthenticated_urls_filter($custom_urls, $request_meth
 
 == Changelog ==
 
+= 20200902 =
+* Fix for servers that change the headers to lower or uppercase.
+
 = 20200818 =
 * Removed `user_pass` from returned user after login call.
 

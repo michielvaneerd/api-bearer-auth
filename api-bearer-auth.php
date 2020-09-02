@@ -3,13 +3,13 @@
 Plugin Name: API Bearer Auth
 Description: Authentication for REST API
 Text Domain: api_bearer_auth
-Version: 20200818
+Version: 20200902
 Author: Michiel van Eerd
 License: GPL2
 */
 
 // Always update this!
-define('API_BEARER_AUTH_PLUGIN_VERSION', '20200818');
+define('API_BEARER_AUTH_PLUGIN_VERSION', '20200902');
 
 /**
  * How long access token will be valid.
@@ -144,9 +144,10 @@ if (!class_exists('API_Bearer_Auth')) {
        * RewriteCond %{HTTP:Authorization} ^(.*)
        * RewriteRule ^(.*) - [E=HTTP_AUTHORIZATION:%1]
        */
-      $headers = function_exists('apache_request_headers')
-        ? apache_request_headers() : $_SERVER;
-      $possibleAuthHeaderKeys = ['Authorization', 'HTTP_AUTHORIZATION', 'REDIRECT_HTTP_AUTHORIZATION'];
+      // On some servers the headers are changed to upper or lowercase.
+      $headers = array_change_key_case(function_exists('apache_request_headers')
+        ? apache_request_headers() : $_SERVER, CASE_LOWER);
+      $possibleAuthHeaderKeys = ['authorization', 'http_authorization', 'redirect_http_authorization'];
       $authHeader = null;
       foreach ($possibleAuthHeaderKeys as $key) {
         if (!empty($headers[$key])) {

@@ -3,13 +3,13 @@
 Plugin Name: API Bearer Auth
 Description: Authentication for REST API
 Text Domain: api_bearer_auth
-Version: 20200902
+Version: 20200911
 Author: Michiel van Eerd
 License: GPL2
 */
 
 // Always update this!
-define('API_BEARER_AUTH_PLUGIN_VERSION', '20200902');
+define('API_BEARER_AUTH_PLUGIN_VERSION', '20200911');
 
 /**
  * How long access token will be valid.
@@ -264,8 +264,9 @@ if (!class_exists('API_Bearer_Auth')) {
     public function callback_refresh_token(WP_REST_Request $request) {
 
       $body = $request->get_json_params();
+      $client_name = !empty($body['client_name']) ? $body['client_name'] : '';
 
-      $user_id = $this->db->get_user_id_from_refresh_token($body['token']);
+      $user_id = $this->db->get_user_id_from_refresh_token($body['token'], $client_name);
       if (empty($user_id)) {
         return new WP_Error('api_api_bearer_auth_error_invalid_token',
           __('Invalid token.', 'api_api_bearer'), ['status' => 401]);
@@ -274,7 +275,7 @@ if (!class_exists('API_Bearer_Auth')) {
         return new WP_Error('api_api_bearer_auth_wrong_blog',
           __('You are no member of this blog.', 'api_bearer_auth'), ['status' => 401]);
       }
-      $userInfo = $this->db->refresh_access_token($body['token'], $user_id);
+      $userInfo = $this->db->refresh_access_token($body['token'], $user_id, $client_name);
       if (empty($userInfo)) {
         return new WP_Error('api_api_bearer_auth_error_invalid_token',
         __('Invalid token.', 'api_api_bearer'), ['status' => 401]);
@@ -297,8 +298,8 @@ if (!class_exists('API_Bearer_Auth')) {
         return new WP_Error('api_api_bearer_auth_wrong_blog',
           __('You are no member of this blog.', 'api_bearer_auth'), ['status' => 401]);
       }
-      // Update access en refresh tokens
-      if (($result = $this->db->login($user->ID)) !== false) {
+      // Update or insert access en refresh tokens
+      if (($result = $this->db->login($user->ID, !empty($body['client_name']) ? $body['client_name'] : '')) !== false) {
 
         $safeUser = $user;
         unset($safeUser->data->user_pass);

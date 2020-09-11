@@ -2,7 +2,7 @@
 Contributors: michielve
 Tags: api, rest-api, authentication, jwt, jwt-tokens
 Requires at least: 4.6
-Tested up to: 5.4.2
+Tested up to: 5.5.1
 Requires PHP: 5.4.0
 Stable tag: trunk
 License: GPLv2 or later
@@ -56,7 +56,9 @@ Endpoint:
 
 Request body:
 
-`{"username": "my_username", "password": "my_password"}`
+__Note: `client_name` is optional. But if you use it, make sure to use it as well for the refresh call!__
+
+`{"username": "my_username", "password": "my_password", "client_name": "my_app"}`
 
 Response:
 
@@ -83,7 +85,9 @@ Endpoint:
 
 Request body:
 
-`{"token": "your_refresh_token"}`
+__Note: `client_name` is optional. But if you did use it for the login call, make sure to use it here as well!__
+
+`{"token": "your_refresh_token", "client_name": "my_app"}`
 
 Response success:
 
@@ -160,6 +164,10 @@ function api_bearer_auth_unauthenticated_urls_filter($custom_urls, $request_meth
 }`
 
 == Changelog ==
+
+= 20200911 =
+* Added client_name key to login and refresh endpoint.
+* Database changes: client_name and some indexes.
 
 = 20200902 =
 * Fix for servers that change the headers to lower or uppercase.

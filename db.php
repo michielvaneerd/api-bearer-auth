@@ -41,11 +41,11 @@ class API_Bearer_Auth_Db {
    * @param string $refresh_token Refresh token.
    * @return integer|null User id or null when nothing is found.
    */
-  public function get_user_id_from_refresh_token($token) {
+  public function get_user_id_from_refresh_token($token, $client_name = '') {
     global $wpdb;
     return $wpdb->get_var($wpdb->prepare('SELECT user_id
         FROM ' . $wpdb->base_prefix . 'user_tokens
-        WHERE refresh_token = %s', $token));
+        WHERE refresh_token = %s AND client_name = %s', $token, $client_name));
   }
 
   /**
@@ -65,12 +65,13 @@ class API_Bearer_Auth_Db {
    * @param $refresh_token Refresh token of this user.
    * @return array|false Array with new access token or false on error.
    */
-  public function refresh_access_token($refresh_token, $user_id) {
+  public function refresh_access_token($refresh_token, $user_id, $client_name = '') {
     global $wpdb;
     $token = $this->create_access_token($user_id);
     if ($wpdb->query($wpdb->prepare("UPDATE " . $wpdb->base_prefix . "user_tokens
-      SET access_token = %s,
-      access_token_valid = %s WHERE user_id = %d", $token['token'], $token['expires_datetime'], $user_id)))
+      SET access_token = %s, access_token_valid = %s
+      WHERE user_id = %d AND client_name = %s",
+      $token['token'], $token['expires_datetime'], $user_id, $client_name)))
     {
       return [
         'access_token' => $token['token'],
@@ -85,13 +86,15 @@ class API_Bearer_Auth_Db {
    * @param $user_id ID of WP user
    * @return false on error or array with access and refresh token on success
    */
-  public function login($user_id) {
+  public function login($user_id, $client_name = '') {
     global $wpdb;
     $access_token = $this->create_access_token($user_id);
     $refresh_token = $this->create_refresh_token($user_id);
+
     if ($wpdb->query($wpdb->prepare("INSERT INTO " . $wpdb->base_prefix . "user_tokens
       SET
       user_id = %d,
+      client_name = %s,
       access_token = %s,
       access_token_valid = %s,
       refresh_token = %s
@@ -100,6 +103,7 @@ class API_Bearer_Auth_Db {
       access_token_valid = %s,
       refresh_token = %s",
       $user_id,
+      $client_name,
       $access_token['token'],
       $access_token['expires_datetime'],
       $refresh_token,

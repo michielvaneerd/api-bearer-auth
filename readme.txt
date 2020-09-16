@@ -165,6 +165,9 @@ function api_bearer_auth_unauthenticated_urls_filter($custom_urls, $request_meth
 
 == Changelog ==
 
+= 20200916 =
+* Added permission_callback to prevent error in log.
+
 = 20200911 =
 * Added client_name key to login and refresh endpoint.
 * Database changes: client_name and some indexes.

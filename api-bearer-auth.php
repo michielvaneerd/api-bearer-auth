@@ -3,13 +3,13 @@
 Plugin Name: API Bearer Auth
 Description: Authentication for REST API
 Text Domain: api_bearer_auth
-Version: 20200911
+Version: 20200916
 Author: Michiel van Eerd
 License: GPL2
 */
 
 // Always update this!
-define('API_BEARER_AUTH_PLUGIN_VERSION', '20200911');
+define('API_BEARER_AUTH_PLUGIN_VERSION', '20200916');
 
 /**
  * How long access token will be valid.
@@ -239,6 +239,7 @@ if (!class_exists('API_Bearer_Auth')) {
       register_rest_route('api-bearer-auth/v1', '/login', [
         'methods' => 'POST',
         'callback' => [$this, 'callback_login'],
+        'permission_callback' => '__return_true',
         'args' => [
           'username' => [
             'required' => true,
@@ -252,6 +253,7 @@ if (!class_exists('API_Bearer_Auth')) {
       register_rest_route('api-bearer-auth/v1', '/tokens/refresh', [
         'methods' => 'POST',
         'callback' => [$this, 'callback_refresh_token'],
+        'permission_callback' => '__return_true',
         'args' => [
           'token' => [
             'required' => true

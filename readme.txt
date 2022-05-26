@@ -2,7 +2,7 @@
 Contributors: michielve
 Tags: api, rest-api, authentication, jwt, jwt-tokens
 Requires at least: 4.6
-Tested up to: 5.9
+Tested up to: 6.0
 Requires PHP: 5.4.0
 Stable tag: trunk
 License: GPLv2 or later

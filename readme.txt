@@ -2,7 +2,7 @@
 Contributors: michielve
 Tags: api, rest-api, authentication, jwt, jwt-tokens
 Requires at least: 4.6
-Tested up to: 6.0
+Tested up to: 6.0.2
 Requires PHP: 5.4.0
 Stable tag: trunk
 License: GPLv2 or later
@@ -142,7 +142,7 @@ If you are not logged in or you send an invalid access token, you get a 401 resp
 
 By default an access token is valid for 1 day. You can change this, by defining the `API_BEARER_ACCESS_TOKEN_VALID_IN_SECONDS` constant in your wp-config.php file.
 
-`define('API_BEARER_ACCESS_TOKEN_VALID_IN_SECONDS', 3600); // 1 minute`
+`define('API_BEARER_ACCESS_TOKEN_VALID_IN_SECONDS', 3600); // 1 hour`
 
 = Whitelist unauthenticated URLs =
 

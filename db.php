@@ -139,6 +139,8 @@ class API_Bearer_Auth_Db {
     } else {
       $header = $this->base64url_encode(json_encode(['typ' => 'JWT', 'alg' => self::$JWT_ALG]));
       $payload = $this->base64url_encode(json_encode([
+        'iss' => $this->get_issuer(),
+        'aud' => $this->get_audience(),
         'exp' => $expTs,
         'sub' => $user_id
       ]));
@@ -153,6 +155,14 @@ class API_Bearer_Auth_Db {
       'expires_datetime' => $exp->format(self::$datetimeFormat),
       'expires_in' => $expiresIn
     ];
+  }
+
+  private function get_issuer() {
+    return apply_filters('api_bearer_jwt_iss', get_bloginfo('url') ); 
+  }
+
+  private function get_audience() {
+    return apply_filters('api_bearer_jwt_aud', get_bloginfo('url') ); 
   }
 
   private function verify_jwt($token) {

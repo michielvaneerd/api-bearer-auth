@@ -1,6 +1,7 @@
 <?php
 
-function api_bearer_auth_migrate() {
+function api_bearer_auth_migrate()
+{
 
   global $wpdb;
 
@@ -38,5 +39,4 @@ function api_bearer_auth_migrate() {
       }
     }
   }
-
 };
